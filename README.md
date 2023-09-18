@@ -27,4 +27,4 @@ The following models are currently available. They provide translations between 
 
 ## More Infomation
 
-For more help, please visit  [EasyNMT](https://github.com/UKPLab/EasyNMT)
+For more infomation, please visit [EasyNMT](https://github.com/UKPLab/EasyNMT)
