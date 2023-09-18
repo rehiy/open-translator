@@ -1,0 +1,17 @@
+#!/bin/sh
+#
+
+docker build -t rehiy/open-translator .
+
+# test
+
+docker run --name translator -d \
+    --volume ./cache:/cache \
+    rehiy/open-translator
+
+docker logs -f translator
+
+# clear
+
+docker rm -f translator
+docker rmi rehiy/open-translator

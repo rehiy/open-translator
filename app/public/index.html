@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="zh-CN">
+
+<head>
+    <title>Open Translator</title>
+    <meta charset="utf-8" />
+    <!-- empty csp -->
+    <meta http-equiv="Content-Security-Policy" />
+    <!-- viewport-fix -->
+    <meta name="viewport" content="viewport-fit=cover,width=device-width,initial-scale=1,user-scalable=no" />
+    <!-- browser webapp style -->
+    <meta name="theme-color" content="#1b86ca" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <!-- static css files -->
+    <link rel="icon" type="image/png" href="assets/icon.png" />
+    <link rel="stylesheet" type="text/css" href="assets/bootstrap/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="assets/bootstrap-icons/bootstrap-icons.min.css" />
+    <link rel="stylesheet" type="text/css" href="assets/style.css?v1.127" />
+    <!-- static js files -->
+    <script type="text/javascript" src="assets/bootstrap/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="assets/vue-global/vue.global.js"></script>
+    <script type="text/javascript" src="assets/vue-global/vue-router.global.js"></script>
+</head>
+
+<body>
+
+    <header>
+        <nav class="navbar sticky-top bg-body-tertiary mb-2">
+            <div class="container-xxl">
+                <a class="navbar-brand" href="./">
+                    <img src="assets/icon.png" height="26">
+                    &nbsp; Open Translator
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <div id="app" class="container-xxl main py-3">
+        <div class="row g-3 mb-3">
+            <div class="col-12 col-md-6">
+                <select class="form-select" v-model="source_lang" @change="get_allowed_target_langs">
+                    <option value="" selected>自动探测 {{detected_lang}}</option>
+                    <option v-for="lang in allowed_source_langs" :value="lang">{{langs[lang]}}</option>
+                </select>
+            </div>
+            <div class="col-12 col-md-6">
+                <select class="form-select" v-model="target_lang" @change="get_allowed_source_langs">
+                    <option value="" selected>选择目标语言</option>
+                    <option v-for="lang in allowed_target_langs" :value="lang">{{langs[lang]}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="row g-3">
+            <div class="col-12 col-md-6 position-relative">
+                <textarea v-model="text" class="form-control lh-lg" rows="8" @change="detect_language"></textarea>
+                <button type="button" class="btn btn-outline-primary position-absolute bottom-0 end-0 me-3 mb-2"
+                    :disabled="translating || !target_lang || !text" @click="translate">
+                    <i class="bi bi-globe2"></i> {{ translating ? '翻译中···' : '翻译'}}
+                </button>
+            </div>
+            <div class="col-12 col-md-6">
+                <textarea v-model="translated_text" class="form-control lh-lg" rows="8" readonly></textarea>
+            </div>
+        </div>
+        <div class="d-grid gap-2 position-fixed bottom-0 end-0 p-2" v-if="messages.length > 0">
+            <div v-for="item in messages" :key="item.index" :class="{'text-bg-danger': item.type == 'error'}"
+                class="toast align-items-center show">
+                <div class="d-flex">
+                    <div class="toast-body">{{ item.content }}</div>
+                    <button class="btn-close me-2 m-auto" @click="removeMessage(item.index)"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="navbar-fixed-bottom bd-footer bg-body-tertiary">
+        <div class="container-xxl py-2 py-md-3 text-body-secondary">
+            <img class="mb-3" src="assets/logo.png" alt="OpenTDP" height="60">
+            <div class="mb-2">基于Facebook的mBART50模型构建的机器翻译系统</div>
+            <div>前端界面由<a href="https://www.rehiy.com">若海</a>使用Bootstrap&Vue构建</div>
+        </div>
+    </footer>
+
+    <script type="text/javascript">
+        Vue.createApp({
+            data() {
+                const langs = {
+                    "af": "南非荷兰语",
+                    "ar": "阿拉伯语",
+                    "az": "阿塞拜疆语",
+                    "bn": "孟加拉语",
+                    "cs": "捷克语",
+                    "de": "德语",
+                    "en": "英语",
+                    "es": "西班牙语",
+                    "et": "爱沙尼亚语",
+                    "fa": "波斯语",
+                    "fi": "芬兰语",
+                    "fr": "法语",
+                    "gl": "加利西亚语",
+                    "gu": "古吉拉特语",
+                    "he": "希伯来语",
+                    "hi": "印地语",
+                    "hr": "克罗地亚语",
+                    "id": "印度尼西亚语",
+                    "it": "意大利语",
+                    "ja": "日本語",
+                    "ka": "格鲁吉亚语",
+                    "kk": "哈萨克语",
+                    "km": "高棉语",
+                    "ko": "韩国语",
+                    "lt": "立陶宛语",
+                    "lv": "拉脱维亚语",
+                    "mk": "马其顿语",
+                    "ml": "马拉雅拉姆语",
+                    "mn": "蒙古语",
+                    "mr": "马拉地语",
+                    "my": "缅甸语",
+                    "ne": "尼泊尔语",
+                    "nl": "荷兰语",
+                    "pl": "波兰语",
+                    "ps": "普什图语",
+                    "pt": "葡萄牙语",
+                    "ro": "罗马尼亚语",
+                    "ru": "俄罗斯语",
+                    "si": "僧伽罗语",
+                    "sl": "斯洛文尼亚语",
+                    "sv": "瑞典语",
+                    "sw": "斯瓦希里语",
+                    "ta": "泰米尔语",
+                    "te": "泰卢固语",
+                    "th": "泰国语",
+                    "tl": "塔加洛语（菲律宾）",
+                    "tr": "土耳其文",
+                    "uk": "乌克兰文",
+                    "ur": "乌尔都文",
+                    "vi": "越南文",
+                    "xh": "科萨文",
+                    "zh": "中文"
+                };
+                return {
+                    langs,
+                    messages: [],
+                    translating: false,
+                    allowed_source_langs: [],
+                    allowed_target_langs: [],
+                    detected_lang: '',
+                    source_lang: '',
+                    target_lang: 'zh',
+                    text: '',
+                    translated_text: '',
+                }
+            },
+            created() {
+                window.addEventListener('message', e => {
+                    e.data.content && this.createMessage(e.data);
+                });
+                window.addEventListener('unhandledrejection', e => {
+                    this.createMessage({ content: e.reason, type: 'error' });
+                    e.preventDefault && e.preventDefault();
+                });
+                this.get_supported_langs();
+            },
+            methods: {
+                translate() {
+                    this.translating = true;
+                    const sl = this.source_lang;
+                    const tl = this.target_lang || 'zh';
+                    const tt = encodeURIComponent(this.text);
+                    const url = `/translate?source_lang=${sl}&target_lang=${tl}&text=${tt}`
+                    fetch(url).then(r => r.json()).then(data => {
+                        if (!data.translated) {
+                            throw new Error(data.detail || '未知错误');
+                        }
+                        this.target_lang = data.target_lang;
+                        this.translated_text = data.translated.join('');
+                    }).finally(() => {
+                        this.translating = false;
+                    });
+                },
+                detect_language() {
+                    const url = '/language_detection?text=' + encodeURIComponent(this.text);
+                    fetch(url).then(r => r.json()).then(data => {
+                        this.detected_lang = typeof data == 'string' ? data.toUpperCase() : '';
+                        this.get_allowed_target_langs(null, data);
+                    });
+                },
+                get_supported_langs() {
+                    const url = '/get_languages';
+                    fetch(url).then(r => r.json()).then(data => {
+                        this.allowed_source_langs = data.filter(v => this.langs[v]);
+                        this.allowed_target_langs = data.filter(v => this.langs[v]);
+                    });
+                },
+                get_allowed_source_langs(ev, tl) {
+                    const url = '/get_languages?target_langs=' + (tl || this.target_langs);
+                    fetch(url).then(r => r.json()).then(data => {
+                        this.allowed_source_langs = data.filter(v => this.langs[v]);
+                        if (this.allowed_source_langs.indexOf(this.source_lang) === -1) {
+                            this.source_lang = '';
+                        }
+                    });
+                },
+                get_allowed_target_langs(ev, sl) {
+                    const url = '/get_languages?source_lang=' + (sl || this.source_lang);
+                    fetch(url).then(r => r.json()).then(data => {
+                        this.allowed_target_langs = data.filter(v => this.langs[v]);
+                        if (this.allowed_target_langs.indexOf(this.target_lang) === -1) {
+                            this.target_lang = '';
+                        }
+                    });
+                },
+                createMessage(data) {
+                    this.messages.push({
+                        index: Date.now(), type: 'success', ...data
+                    });
+                },
+                removeMessage(idx) {
+                    this.messages = this.messages.filter(m => m.index !== idx);
+                }
+            }
+        }).mount('#app')
+    </script>
+
+</body>
+
+</html>
