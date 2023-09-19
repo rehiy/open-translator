@@ -30,6 +30,17 @@ docker run --name mynmt -d \
 | mbart50_m2m  | [Facebook Research](https://github.com/pytorch/fairseq/tree/master/examples/multilingual) |  52   | 2.3 GB |
 | m2m_100_1.2B | [Facebook Research](https://github.com/pytorch/fairseq/tree/master/examples/m2m_100)      |  100  | 5.0 GB |
 
+## 环境变量
+
+您可以使用各种环境变量来控制 Docker 镜像：
+
+- *MAX_WORKERS*: 翻译的工作进程数量。默认值：1
+- *EASYNMT_MODEL*: 要加载的 EasyNMT 模型。默认值：opus-mt
+- *EASYNMT_MODEL_ARGS*: 在加载 EasyNMT 时带有参数的 JSON 编码字符串。默认值：{}
+- *EASYNMT_MAX_TEXT_LEN*: 翻译的最大文本长度。默认值：未设置
+- *EASYNMT_MAX_BEAM_SIZE*: 翻译的最大束搜索大小。默认值：未设置
+- *EASYNMT_BATCH_SIZE*: 翻译的批处理大小。默认值：16
+  
 ## 更多信息
 
 欲了解更多信息，请访问 [EasyNMT](https://github.com/UKPLab/EasyNMT)。

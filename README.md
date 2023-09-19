@@ -30,6 +30,17 @@ By default, the `opus-mt` model is used when the `EASYNMT_MODEL` environment var
 | mbart50_m2m  | [Facebook Research](https://github.com/pytorch/fairseq/tree/master/examples/multilingual) |    52     | 2.3 GB |
 | m2m_100_1.2B | [Facebook Research](https://github.com/pytorch/fairseq/tree/master/examples/m2m_100)      |    100    | 5.0 GB |
 
+## Environment Variables
+
+You can control the Docker image using various environment variables:
+
+- *MAX_WORKERS*: Number of worker processes for the translation. Default: 1
+- *EASYNMT_MODEL*: Which EasyNMT Model to load. Default: opus-mt
+- *EASYNMT_MODEL_ARGS*: Json encoded string with parameters when loading EasyNMT: Default: {}
+- *EASYNMT_MAX_TEXT_LEN*: Maximal text length for translation. Default: Not set
+- *EASYNMT_MAX_BEAM_SIZE*: Maximal beam size for translation. Default: Not set
+- *EASYNMT_BATCH_SIZE*: Batch size for translation. Default: 16
+
 ## More Information
 
 For more information, please visit [EasyNMT](https://github.com/UKPLab/EasyNMT).
