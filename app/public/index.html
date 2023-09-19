@@ -92,6 +92,7 @@
                 return {
                     messages: [],
                     langs: {},
+                    supported_langs: [],
                     allowed_source_langs: [],
                     allowed_target_langs: [],
                     translating: false,
@@ -150,12 +151,18 @@
                 get_supported_langs() {
                     const url = '/get_languages';
                     fetch(url).then(r => r.json()).then(data => {
-                        this.allowed_source_langs = data.filter(v => this.langs[v]);
-                        this.allowed_target_langs = data.filter(v => this.langs[v]);
+                        this.supported_langs = data.filter(v => this.langs[v]);
+                        this.allowed_source_langs = [...this.supported_langs];
+                        this.allowed_target_langs = [...this.supported_langs];
                     });
                 },
                 get_allowed_source_langs(ev, tl) {
-                    const url = '/get_languages?target_langs=' + (tl || this.target_langs);
+                    tl = tl || this.target_langs;
+                    if (!tl) {
+                        this.allowed_source_langs = [...this.supported_langs];
+                        return;
+                    }
+                    const url = '/get_languages?target_langs=' + tl;
                     fetch(url).then(r => r.json()).then(data => {
                         this.allowed_source_langs = data.filter(v => this.langs[v]);
                         if (this.allowed_source_langs.indexOf(this.source_lang) === -1) {
@@ -164,7 +171,12 @@
                     });
                 },
                 get_allowed_target_langs(ev, sl) {
-                    const url = '/get_languages?source_lang=' + (sl || this.source_lang);
+                    sl = sl || this.source_lang;
+                    if (!sl) {
+                        this.allowed_target_langs = [...this.supported_langs];
+                        return;
+                    }
+                    const url = '/get_languages?source_lang=' + sl;
                     fetch(url).then(r => r.json()).then(data => {
                         this.allowed_target_langs = data.filter(v => this.langs[v]);
                         if (this.allowed_target_langs.indexOf(this.target_lang) === -1) {
