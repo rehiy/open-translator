@@ -118,16 +118,24 @@
             methods: {
                 translate() {
                     this.translating = true;
-                    const sl = this.source_lang;
-                    const tl = this.target_lang || 'zh';
-                    const tt = encodeURIComponent(this.text);
-                    const url = `/translate?source_lang=${sl}&target_lang=${tl}&text=${tt}`
-                    fetch(url).then(r => r.json()).then(data => {
+                    const url = `/translate`
+                    const opt = {
+                        method: 'post',
+                        body: JSON.stringify({
+                            source_lang: this.source_lang,
+                            target_lang: this.target_lang || 'zh',
+                            text: this.text
+                        }),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    };
+                    fetch(url, opt).then(r => r.json()).then(data => {
                         if (!data.translated) {
                             throw new Error(data.detail || '未知错误');
                         }
                         this.target_lang = data.target_lang;
-                        this.translated_text = data.translated.join('');
+                        this.translated_text = data.translated;
                     }).finally(() => {
                         this.translating = false;
                     });

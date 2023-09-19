@@ -16,4 +16,4 @@ ENV EASYNMT_MODEL=opus-mt
 
 EXPOSE 80
 
-CMD  ["/app/start.sh"]
+CMD  ["/app/service.sh"]

@@ -1,31 +1,25 @@
 import os
 import json
 import time
-import datetime
-import requests
-import http3
-from typing import Optional, Union, List
+from typing import Optional, List
 from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from easynmt import EasyNMT
 
 
-IS_BACKEND = os.getenv('ROLE', 'FRONT') == 'BACKEND'
-BACKEND_URL = os.getenv('BACKEND_URL', 'http://localhost:8080')
-print("Booted as backend: {}".format(IS_BACKEND))
-
 model_name = os.getenv('EASYNMT_MODEL', 'opus-mt')
 model_args = json.loads(os.getenv('EASYNMT_MODEL_ARGS', '{}'))
-print("Load model: "+ model_name)
 
-model = EasyNMT(model_name, load_translator=IS_BACKEND, **model_args)
+print("Load model: " + model_name)
+model = EasyNMT(model_name, load_translator=True, **model_args)
 
 
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"],
 )
+
 
 @app.get("/translate")
 async def translate(target_lang: str, text: List[str] = Query([]), source_lang: Optional[str] = '', beam_size: Optional[int] = 5, perform_sentence_splitting: Optional[bool] = True):
@@ -36,40 +30,26 @@ async def translate(target_lang: str, text: List[str] = Query([]), source_lang: 
     :param source_lang: Language of text. Optional, if empty: Automatic language detection
     :param beam_size: Beam size. Optional
     :param perform_sentence_splitting: Split longer documents into individual sentences for translation. Optional
-    :return:  Returns a json with the translated text
+    :return: Returns a json with the translated text
     """
-    if not IS_BACKEND:
-        async_client = http3.AsyncClient()
-        data = {'target_lang': target_lang, 'text': text, 'source_lang': source_lang, 'beam_size': beam_size, 'perform_sentence_splitting': perform_sentence_splitting}
-        x = await async_client.post(BACKEND_URL+'/translate', json=data, timeout=3600)
-        if x.status_code != 200:
-            error_msg = "Error: " + x.text
-            try:
-                error_msg = x.json()['detail']
-            except:
-                pass
-            raise HTTPException(403, detail=error_msg)
-        return x.json()
-    else:
-        #Check input parameters
-        if 'EASYNMT_MAX_TEXT_LEN' in os.environ and len(text) > int(os.getenv('EASYNMT_MAX_TEXT_LEN')):
-            raise ValueError("Text was too long. Only texts up to {} characters are allowed".format(os.getenv('EASYNMT_MAX_TEXT_LEN')))
-        if beam_size < 1 or ('EASYNMT_MAX_BEAM_SIZE' in os.environ and beam_size > int(os.getenv('EASYNMT_MAX_BEAM_SIZE'))):
-            raise ValueError("Illegal beam size")
-        if len(source_lang.strip()) == 0:
-            source_lang = None
-        #Start the translation
-        start_time = time.time()
-        output = {"target_lang": target_lang, "source_lang": source_lang}
-        if source_lang is None:
-            detected_langs = model.language_detection(text)
-            output['detected_langs'] = detected_langs
-        try:
-            output['translated'] = model.translate(text, target_lang=target_lang, source_lang=source_lang, beam_size=beam_size, perform_sentence_splitting=perform_sentence_splitting, batch_size=int(os.getenv('EASYNMT_BATCH_SIZE', 16)))
-        except Exception as e:
-            raise HTTPException(403, detail="Error: "+str(e))
-        output['translation_time'] = time.time()-start_time
-        return output
+    # Check input parameters
+    if 'EASYNMT_MAX_TEXT_LEN' in os.environ and len(text) > int(os.getenv('EASYNMT_MAX_TEXT_LEN')):
+        raise ValueError("Only texts up to {} characters are allowed".format(os.getenv('EASYNMT_MAX_TEXT_LEN')))
+    if beam_size < 1 or ('EASYNMT_MAX_BEAM_SIZE' in os.environ and beam_size > int(os.getenv('EASYNMT_MAX_BEAM_SIZE'))):
+        raise ValueError("Illegal beam size")
+    # Start the translation
+    start_time = time.time()
+    batch_size = int(os.getenv('EASYNMT_BATCH_SIZE', 16))
+    output = {"target_lang": target_lang, "source_lang": source_lang}
+    if len(source_lang.strip()) == 0:
+        source_lang = model.language_detection(text)
+        output['detected_langs'] = source_lang
+    try:
+        output['translated'] = model.translate(text, target_lang=target_lang, source_lang=source_lang, beam_size=beam_size, perform_sentence_splitting=perform_sentence_splitting, batch_size=batch_size)
+    except Exception as e:
+        raise HTTPException(403, detail="Error: "+str(e))
+    output['translation_time'] = time.time()-start_time
+    return output
 
 
 @app.post("/translate")
@@ -115,8 +95,7 @@ async def language_detection(text: str):
 @app.post("/language_detection")
 async def language_detection_post(request: Request):
     """
-    Pass a json that has a 'text' key. The 'text' element can either be a string, a list of strings, or
-    a dict.
+    Pass a json that has a 'text' key. The 'text' element can either be a string, a list of strings, or a dict.
     :return: Languages detected
     """
     data = await request.json()
