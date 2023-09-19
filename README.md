@@ -43,7 +43,13 @@ By default, the `opus-mt` model is used when the `EASYNMT_MODEL` environment var
 
 You can control the Docker image using various environment variables:
 
+### Gunicorn
+
+- *BIND*: Service Listening Address. Default: 0.0.0.0:80
 - *MAX_WORKERS*: Number of worker processes for the translation. Default: 1
+
+### EasyNMT
+
 - *EASYNMT_MODEL*: Which EasyNMT Model to load. Default: opus-mt
 - *EASYNMT_MODEL_ARGS*: Json encoded string with parameters when loading EasyNMT: Default: {}
 - *EASYNMT_MAX_TEXT_LEN*: Maximal text length for translation. Default: Not set

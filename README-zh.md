@@ -44,7 +44,13 @@ docker run --name mynmt -d \
 
 您可以使用各种环境变量来控制 Docker 镜像：
 
+### Gunicorn
+
+- *BIND*: 服务监听地址。默认值：0.0.0.0:80
 - *MAX_WORKERS*: 翻译的工作进程数量。默认值：1
+
+### EasyNMT
+
 - *EASYNMT_MODEL*: 要加载的 EasyNMT 模型。默认值：opus-mt
 - *EASYNMT_MODEL_ARGS*: 在加载 EasyNMT 时带有参数的 JSON 编码字符串。默认值：{}
 - *EASYNMT_MAX_TEXT_LEN*: 翻译的最大文本长度。默认值：未设置
