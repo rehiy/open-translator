@@ -39,7 +39,7 @@ docker run --name mynmt -d \
 - *BIND*: 服务监听地址。默认值：0.0.0.0:80
 - *MAX_WORKERS*: 翻译的工作进程数量。默认值：1
 
-### EasyNMT
+### Easy NMT
 
 - *EASYNMT_MODEL*: 要加载的 EasyNMT 模型。默认值：opus-mt
 - *EASYNMT_MODEL_ARGS*: 在加载 EasyNMT 时带有参数的 JSON 编码字符串。默认值：{}
