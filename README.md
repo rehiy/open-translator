@@ -6,7 +6,7 @@ Document language：[English](./README.md) | [简体中文](./README-zh.md)
 - Advanced neural machine translation technology
 - Automatic download of pre-trained machine translation models
 
-## Usage
+## Quick Start
 
 Install using Docker and open in your browser at `http://your-server`
 
@@ -20,6 +20,15 @@ docker run --name mynmt -d \
 - Initial usage requires model download and may take a while to start; you can check the progress with `docker logs -f mynmt`
 - Keep the `/cache` directory to avoid re-downloading models when updating
 
+## Native Deployment
+
+- Download the project and extract the `app` folder to the system root directory.
+- Install Python 3 and execute the following code:
+
+```shell
+/app/setup.sh
+/app/service.sh
+```
 ## Available Models
 
 By default, the `opus-mt` model is used when the `EASYNMT_MODEL` environment variable is not specified. This model has a smaller size and faster response. If you are not satisfied with the translation results, you can also try loading the following models.

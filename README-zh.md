@@ -6,7 +6,7 @@
 - 先进的神经机器翻译技术
 - 自动下载预训练的机器翻译模型
 
-## 使用方法
+## 快速开始
 
 使用 Docker 安装，并在浏览器中打开 `http://your-server`
 
@@ -19,6 +19,16 @@ docker run --name mynmt -d \
 
 - 首次使用需下载模型，会花费较长的时间启动，可通过`docker logs -f mynmt`查看进度
 - 保留`/cache`目录，可避免更新时重复下载模型
+
+## 原生部署
+
+- 下载项目，并解压`app`到系统根目录
+- 安装python3，并执行如下代码
+
+```shell
+/app/setup.sh
+/app/service.sh
+```
 
 ## 可用模型
 

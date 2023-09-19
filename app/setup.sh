@@ -18,4 +18,4 @@ apt-get autoremove -y
 rm -rf /var/lib/apt/lists
 rm -rf /var/cache/debconf/*-old
 
-rm -rf /app/deploy
+rm -rf /app/setup.sh

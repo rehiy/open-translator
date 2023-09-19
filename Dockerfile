@@ -6,7 +6,7 @@ LABEL version="1.1.0" \
 ADD app /app
 
 WORKDIR /app/
-RUN sh /app/deploy
+RUN sh /app/setup.sh
 
 ENV PYTHONPATH=/app
 
