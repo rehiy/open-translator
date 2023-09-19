@@ -41,13 +41,17 @@
             <div class="col-12 col-md-6">
                 <select class="form-select" v-model="source_lang" @change="get_allowed_target_langs">
                     <option value="" selected>自动探测 {{detected_lang}}</option>
-                    <option v-for="lang in allowed_source_langs" :value="lang">{{langs[lang]}}</option>
+                    <option v-for="lang in allowed_source_langs" :value="lang">
+                        {{langs[lang].zh}}（{{langs[lang].native}}）
+                    </option>
                 </select>
             </div>
             <div class="col-12 col-md-6">
                 <select class="form-select" v-model="target_lang" @change="get_allowed_source_langs">
                     <option value="" selected>选择目标语言</option>
-                    <option v-for="lang in allowed_target_langs" :value="lang">{{langs[lang]}}</option>
+                    <option v-for="lang in allowed_target_langs" :value="lang">
+                        {{langs[lang].zh}}（{{langs[lang].native}}）
+                    </option>
                 </select>
             </div>
         </div>
@@ -85,66 +89,12 @@
     <script type="text/javascript">
         Vue.createApp({
             data() {
-                const langs = {
-                    "af": "南非荷兰语",
-                    "ar": "阿拉伯语",
-                    "az": "阿塞拜疆语",
-                    "bn": "孟加拉语",
-                    "cs": "捷克语",
-                    "de": "德语",
-                    "en": "英语",
-                    "es": "西班牙语",
-                    "et": "爱沙尼亚语",
-                    "fa": "波斯语",
-                    "fi": "芬兰语",
-                    "fr": "法语",
-                    "gl": "加利西亚语",
-                    "gu": "古吉拉特语",
-                    "he": "希伯来语",
-                    "hi": "印地语",
-                    "hr": "克罗地亚语",
-                    "id": "印度尼西亚语",
-                    "it": "意大利语",
-                    "ja": "日本語",
-                    "ka": "格鲁吉亚语",
-                    "kk": "哈萨克语",
-                    "km": "高棉语",
-                    "ko": "韩国语",
-                    "lt": "立陶宛语",
-                    "lv": "拉脱维亚语",
-                    "mk": "马其顿语",
-                    "ml": "马拉雅拉姆语",
-                    "mn": "蒙古语",
-                    "mr": "马拉地语",
-                    "my": "缅甸语",
-                    "ne": "尼泊尔语",
-                    "nl": "荷兰语",
-                    "pl": "波兰语",
-                    "ps": "普什图语",
-                    "pt": "葡萄牙语",
-                    "ro": "罗马尼亚语",
-                    "ru": "俄罗斯语",
-                    "si": "僧伽罗语",
-                    "sl": "斯洛文尼亚语",
-                    "sv": "瑞典语",
-                    "sw": "斯瓦希里语",
-                    "ta": "泰米尔语",
-                    "te": "泰卢固语",
-                    "th": "泰国语",
-                    "tl": "塔加洛语（菲律宾）",
-                    "tr": "土耳其文",
-                    "uk": "乌克兰文",
-                    "ur": "乌尔都文",
-                    "vi": "越南文",
-                    "xh": "科萨文",
-                    "zh": "中文"
-                };
                 return {
-                    langs,
                     messages: [],
-                    translating: false,
+                    langs: {},
                     allowed_source_langs: [],
                     allowed_target_langs: [],
+                    translating: false,
                     detected_lang: '',
                     source_lang: '',
                     target_lang: 'zh',
@@ -160,7 +110,10 @@
                     this.createMessage({ content: e.reason, type: 'error' });
                     e.preventDefault && e.preventDefault();
                 });
-                this.get_supported_langs();
+                fetch('/language.json?v2').then(r => r.json()).then(data => {
+                    this.langs = data;
+                    this.get_supported_langs();
+                });
             },
             methods: {
                 translate() {
