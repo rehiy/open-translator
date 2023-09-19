@@ -24,11 +24,11 @@ docker run --name mynmt -d \
 
 By default, the `opus-mt` model is used when the `EASYNMT_MODEL` environment variable is not specified. This model has a smaller size and faster response. If you are not satisfied with the translation results, you can also try loading the following models.
 
-| Model        | Reference Link                                                                            | # Languages |  Size  |
-| ------------ | ----------------------------------------------------------------------------------------- | :---------: | :----: |
-| opus-mt      | [Helsinki-NLP](https://github.com/Helsinki-NLP/Opus-MT)                                   |     186     | 300 MB |
-| mbart50_m2m  | [Facebook Research](https://github.com/pytorch/fairseq/tree/master/examples/multilingual) |     52      | 2.3 GB |
-| m2m_100_1.2B | [Facebook Research](https://github.com/pytorch/fairseq/tree/master/examples/m2m_100)      |     100     | 5.0 GB |
+| Model        | Reference Link                                                                            | Languages |  Size  |
+| ------------ | ----------------------------------------------------------------------------------------- | :-------: | :----: |
+| opus-mt      | [Helsinki-NLP](https://github.com/Helsinki-NLP/Opus-MT)                                   |    186    | 300 MB |
+| mbart50_m2m  | [Facebook Research](https://github.com/pytorch/fairseq/tree/master/examples/multilingual) |    52     | 2.3 GB |
+| m2m_100_1.2B | [Facebook Research](https://github.com/pytorch/fairseq/tree/master/examples/m2m_100)      |    100    | 5.0 GB |
 
 ## More Information
 

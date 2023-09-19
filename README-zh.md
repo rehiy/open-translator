@@ -24,7 +24,7 @@ docker run --name mynmt -d \
 
 不指定环境变量`EASYNMT_MODEL`时，默认使用`opus-mt`模型，此模型容量较小、响应速度快。若对翻译结果不满意，还可以尝试加载以下模型。
 
-| 模型         | 参考链接                                                                                  | #语言 |  大小  |
+| 模型         | 参考链接                                                                                  | 语言  |  大小  |
 | ------------ | ----------------------------------------------------------------------------------------- | :---: | :----: |
 | opus-mt      | [Helsinki-NLP](https://github.com/Helsinki-NLP/Opus-MT)                                   |  186  | 300 MB |
 | mbart50_m2m  | [Facebook Research](https://github.com/pytorch/fairseq/tree/master/examples/multilingual) |  52   | 2.3 GB |
