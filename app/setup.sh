@@ -6,7 +6,7 @@ chmod +x /app/*.sh
 apt-get update && apt-get install -y wget procps build-essential
 
 pip install --no-cache-dir torch==1.13.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
-pip install --no-cache-dir "uvicorn[standard]" gunicorn fastapi langid sacremoses easynmt
+pip install --no-cache-dir "uvicorn[standard]" gunicorn fastapi langid sacremoses easynmt beautifulsoup4
 
 python -m nltk.downloader 'punkt'
 

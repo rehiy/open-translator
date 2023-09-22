@@ -43,9 +43,6 @@ docker run --name mynmt -d \
 
 - *EASYNMT_MODEL*: 要加载的 EasyNMT 模型。默认值：opus-mt
 - *EASYNMT_MODEL_ARGS*: 在加载 EasyNMT 时带有参数的 JSON 编码字符串。默认值：{}
-- *EASYNMT_MAX_TEXT_LEN*: 翻译的最大文本长度。默认值：未设置
-- *EASYNMT_MAX_BEAM_SIZE*: 翻译的最大束搜索大小。默认值：未设置
-- *EASYNMT_BATCH_SIZE*: 翻译的批处理大小。默认值：16
 
 ## 可用模型
 

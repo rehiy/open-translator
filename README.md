@@ -43,9 +43,6 @@ You can control the Docker image using various environment variables:
 
 - *EASYNMT_MODEL*: Which EasyNMT Model to load. Default: opus-mt
 - *EASYNMT_MODEL_ARGS*: Json encoded string with parameters when loading EasyNMT: Default: {}
-- *EASYNMT_MAX_TEXT_LEN*: Maximal text length for translation. Default: Not set
-- *EASYNMT_MAX_BEAM_SIZE*: Maximal beam size for translation. Default: Not set
-- *EASYNMT_BATCH_SIZE*: Batch size for translation. Default: 16
 
 ## Available Models
 

@@ -1,54 +1,26 @@
-import os
-import json
-import time
-from typing import Optional, List
-from fastapi import FastAPI, HTTPException, Query, Request
-from fastapi.middleware.cors import CORSMiddleware
+from typing import Optional
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.staticfiles import StaticFiles
-from easynmt import EasyNMT
-
-
-model_name = os.getenv('EASYNMT_MODEL', 'opus-mt')
-model_args = json.loads(os.getenv('EASYNMT_MODEL_ARGS', '{}'))
-
-print("Load model: " + model_name)
-model = EasyNMT(model_name, load_translator=True, **model_args)
+from helper import translate
 
 
 app = FastAPI()
-app.add_middleware(
-    CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"],
-)
 
 
 @app.get("/translate")
-async def translate(target_lang: str, text: List[str] = Query([]), source_lang: Optional[str] = '', beam_size: Optional[int] = 5, perform_sentence_splitting: Optional[bool] = True):
+async def translate(target_lang: str, text: str, source_lang: str = None):
     """
     Translates the text to the given target language.
     :param text: Text that should be translated
     :param target_lang: Target language
     :param source_lang: Language of text. Optional, if empty: Automatic language detection
-    :param beam_size: Beam size. Optional
-    :param perform_sentence_splitting: Split longer documents into individual sentences for translation. Optional
     :return: Returns a json with the translated text
     """
-    # Check input parameters
-    if 'EASYNMT_MAX_TEXT_LEN' in os.environ and len(text) > int(os.getenv('EASYNMT_MAX_TEXT_LEN')):
-        raise ValueError("Only texts up to {} characters are allowed".format(os.getenv('EASYNMT_MAX_TEXT_LEN')))
-    if beam_size < 1 or ('EASYNMT_MAX_BEAM_SIZE' in os.environ and beam_size > int(os.getenv('EASYNMT_MAX_BEAM_SIZE'))):
-        raise ValueError("Illegal beam size")
-    # Start the translation
-    start_time = time.time()
-    batch_size = int(os.getenv('EASYNMT_BATCH_SIZE', 16))
     output = {"target_lang": target_lang, "source_lang": source_lang}
-    if len(source_lang.strip()) == 0:
-        source_lang = model.language_detection(text)
-        output['detected_langs'] = source_lang
     try:
-        output['translated'] = model.translate(text, target_lang=target_lang, source_lang=source_lang, beam_size=beam_size, perform_sentence_splitting=perform_sentence_splitting, batch_size=batch_size)
+        output["translated"], output["detected_langs"] = translate.with_text(text, target_lang, source_lang)
     except Exception as e:
         raise HTTPException(403, detail="Error: "+str(e))
-    output['translation_time'] = time.time()-start_time
     return output
 
 
@@ -62,24 +34,51 @@ async def translate_post(request: Request):
     return await translate(**data)
 
 
+@app.get("/translate_html")
+async def translate_html(target_lang: str, html: str, source_lang: str = None):
+    """
+    Translates the html to the given target language.
+    :param html: Html that should be translated
+    :param target_lang: Target language
+    :param source_lang: Language of html. Optional, if empty: Automatic language detection
+    :return: Returns a json with the translated html
+    """
+    output = {"target_lang": target_lang, "source_lang": source_lang}
+    try:
+        output["translated"], output["detected_langs"] = translate.with_html(html, target_lang, source_lang)
+    except Exception as e:
+        raise HTTPException(403, detail="Error: "+str(e))
+    return output
+
+
+@app.post("/translate_html")
+async def translate_post(request: Request):
+    """
+    Post method for translation
+    :return:
+    """
+    data = await request.json()
+    return await translate_html(**data)
+
+
 @app.get("/lang_pairs")
 async def lang_pairs():
     """
     Returns the language pairs from the model
     :return:
     """
-    return model.lang_pairs
+    return translate.lang_pairs()
 
 
 @app.get("/get_languages")
-async def get_languages(source_lang: Optional[str] = None, target_lang: Optional[str] = None):
+async def get_languages(source_lang: str = None, target_lang: str = None):
     """
     Returns the languages the model supports
     :param source_lang: Optional. Only return languages with this language as source
     :param target_lang: Optional. Only return languages with this language as target
     :return:
     """
-    return model.get_languages(source_lang=source_lang, target_lang=target_lang)
+    return translate.get_languages(source_lang, target_lang)
 
 
 @app.get("/language_detection")
@@ -89,21 +88,7 @@ async def language_detection(text: str):
     :param text: A single text for which we want to know the language
     :return: The detected language
     """
-    return model.language_detection(text)
-
-
-@app.post("/language_detection")
-async def language_detection_post(request: Request):
-    """
-    Pass a json that has a 'text' key. The 'text' element can either be a string, a list of strings, or a dict.
-    :return: Languages detected
-    """
-    data = await request.json()
-    if isinstance(data['text'], list):
-        return [model.language_detection(t) for t in data['text']]
-    elif isinstance(data['text'], dict):
-        return {k: model.language_detection(t) for k, t in data['text'].items()}
-    return model.language_detection(data['text'])
+    return translate.language_detection(text)
 
 
 @app.get("/model_name")
@@ -112,7 +97,7 @@ async def model_name():
     Returns the name of the loaded model
     :return: EasyNMT model name
     """
-    return model._model_name
+    return translate.model_name()
 
 
 app.mount("/", StaticFiles(directory="/app/public", html=True), name="public")
