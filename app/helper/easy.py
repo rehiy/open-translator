@@ -11,11 +11,11 @@ print("Load model: " + model_name)
 model = EasyNMT(model_name, load_translator=True, **model_args)
 
 
-def from_html(html: str, target_lang: str, source_lang: str = None):
-    if "<body>" not in html:
-        html = f'<html><body>{html}</body></html>'
+def translate_html(text: str, target_lang: str, source_lang: str = None):
+    if "<body>" not in text:
+        text = f'<html><body>{text}</body></html>'
 
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(text, 'html.parser')
 
     ignore_tags = [
         'address', 'applet', 'audio', 'canvas', 'code',
@@ -35,7 +35,7 @@ def from_html(html: str, target_lang: str, source_lang: str = None):
     return result, source_lang
 
 
-def from_text(text: str, target_lang: str, source_lang: str = None):
+def translate_text(text: str, target_lang: str, source_lang: str = None):
     if source_lang == '' or source_lang == None:
         source_lang = model.language_detection(text)
 

@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.staticfiles import StaticFiles
-from helper import translator
+
+from helper import easy
 
 
 app = FastAPI()
@@ -19,9 +20,9 @@ async def translate(request: Request):
     try:
         data = await request.json()
         if "is_html" in data and data["is_html"] == True:
-            data["translated"], data["detected_langs"] = translator.from_html(**data)
+            data["translated"], data["detected_langs"] = easy.translate_html(**data)
         else:
-            data["translated"], data["detected_langs"] = translator.from_text(**data)
+            data["translated"], data["detected_langs"] = easy.translate_text(**data)
     except Exception as e:
         raise HTTPException(403, detail="Error: "+str(e))
     return data
@@ -33,7 +34,7 @@ async def model_name():
     Returns the name of the loaded model
     :return: EasyNMT model name
     """
-    return translator.model_name()
+    return easy.model_name()
 
 
 @app.get("/lang_pairs")
@@ -42,7 +43,7 @@ async def lang_pairs():
     Returns the language pairs from the model
     :return:
     """
-    return translator.lang_pairs()
+    return easy.lang_pairs()
 
 
 @app.get("/get_languages")
@@ -53,7 +54,7 @@ async def get_languages(source_lang: str = None, target_lang: str = None):
     :param target_lang: Optional. Only return languages with this language as target
     :return:
     """
-    return translator.get_languages(source_lang, target_lang)
+    return easy.get_languages(source_lang, target_lang)
 
 
 @app.get("/language_detection")
@@ -63,7 +64,7 @@ async def language_detection(text: str):
     :param text: A single text for which we want to know the language
     :return: The detected language
     """
-    return translator.language_detection(text)
+    return easy.language_detection(text)
 
 
 app.mount("/", StaticFiles(directory="/app/public", html=True), name="public")
