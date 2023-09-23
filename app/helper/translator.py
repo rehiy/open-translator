@@ -11,7 +11,7 @@ print("Load model: " + model_name)
 model = EasyNMT(model_name, load_translator=True, **model_args)
 
 
-def with_html(html: str, target_lang: str, source_lang: str = None):
+def from_html(html: str, target_lang: str, source_lang: str = None):
     if "<body>" not in html:
         html = f'<html><body>{html}</body></html>'
 
@@ -35,7 +35,7 @@ def with_html(html: str, target_lang: str, source_lang: str = None):
     return result, source_lang
 
 
-def with_text(text: str, target_lang: str, source_lang: str = None):
+def from_text(text: str, target_lang: str, source_lang: str = None):
     if source_lang == '' or source_lang == None:
         source_lang = model.language_detection(text)
 

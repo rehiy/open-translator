@@ -101,6 +101,7 @@
                     target_lang: 'zh',
                     text: '',
                     translated_text: '',
+                    is_html: false,
                 }
             },
             created() {
@@ -123,9 +124,10 @@
                     const opt = {
                         method: 'post',
                         body: JSON.stringify({
+                            text: this.text,
                             source_lang: this.source_lang,
                             target_lang: this.target_lang || 'zh',
-                            text: this.text
+                            is_html: !!this.is_html,
                         }),
                         headers: {
                             'Content-Type': 'application/json'
