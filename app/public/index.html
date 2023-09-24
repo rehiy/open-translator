@@ -59,11 +59,11 @@
             <div class="col-12 col-md-6 position-relative">
                 <textarea v-model="text" class="form-control lh-lg" rows="8" @change="detect_language"></textarea>
                 <div class="position-absolute bottom-0 end-0 me-4 mb-3 bg-white">
-                    <label class="btn btn-outline-primary">
+                    <label class="btn btn-primary">
                         <input v-model="is_html" type="checkbox" class="btn-check">
-                        HTML {{is_html ? 'ON' : 'OFF'}}
+                        HTML {{is_html ? '启用' : '禁用'}}
                     </label>
-                    <button type="button" class="btn btn-primary ms-2" :disabled="translating || !target_lang || !text"
+                    <button class="btn btn-primary ms-2" :disabled="translating || !target_lang || !text"
                         @click="translate">
                         <i class="bi bi-globe2"></i> {{ translating ? '翻译中···' : '翻译'}}
                     </button>
