@@ -19,10 +19,7 @@ async def translate(request: Request):
     """
     try:
         data = await request.json()
-        if "is_html" in data and data["is_html"] == True:
-            data["translated"], data["detected_langs"] = easy.translate_html(**data)
-        else:
-            data["translated"], data["detected_langs"] = easy.translate_text(**data)
+        data["translated"], data["detected_langs"] = easy.translate(**data)
     except Exception as e:
         raise HTTPException(403, detail="Error: "+str(e))
     return data

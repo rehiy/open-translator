@@ -11,6 +11,13 @@ print("Load model: " + model_name)
 model = EasyNMT(model_name, load_translator=True, **model_args)
 
 
+def translate(text: str, target_lang: str, source_lang: str = None, is_html: bool = False):
+    if is_html:
+        return translate_html(text, target_lang, source_lang)
+    else:
+        return translate_text(text, target_lang, source_lang)
+
+
 def translate_html(text: str, target_lang: str, source_lang: str = None):
     if "<body>" not in text:
         text = f'<html><body>{text}</body></html>'
@@ -22,7 +29,7 @@ def translate_html(text: str, target_lang: str, source_lang: str = None):
         'embed', 'pre', 'script', 'style', 'time', 'video'
     ]
 
-    if source_lang == '' or source_lang == None:
+    if not source_lang:
         source_lang = model.language_detection(soup.get_text())
 
     for node in soup.find_all(string=True):
@@ -36,7 +43,7 @@ def translate_html(text: str, target_lang: str, source_lang: str = None):
 
 
 def translate_text(text: str, target_lang: str, source_lang: str = None):
-    if source_lang == '' or source_lang == None:
+    if not source_lang:
         source_lang = model.language_detection(text)
 
     result = model.translate(text, target_lang, source_lang)
