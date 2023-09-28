@@ -1,0 +1,33 @@
+{
+    "name": "open-translator",
+    "version": "1.0.0",
+    "author": {
+        "name": "Rehiy Wang",
+        "email": "wang@rehiy.com",
+        "url": "http://www.rehiy.com"
+    },
+    "homepage": "http://www.rehiy.com",
+    "description": "Translator Api",
+    "license": "Apache-2.0",
+    "keywords": [
+        "translate",
+        "deepl",
+        "api"
+    ],
+    "scripts": {
+        "start": "node server/app.js",
+        "lint": "eslint src"
+    },
+    "dependencies": {
+        "playwright": "^1.38.1",
+        "webox-node": "^3.3.16"
+    },
+    "devDependencies": {
+        "eslint": "^8.50.0",
+        "eslint-plugin-import": "^2.28.1",
+        "eslint-plugin-prefer-arrow": "^1.2.3"
+    },
+    "type": "module",
+    "main": "server/app.js",
+    "module": "server/app.js"
+}

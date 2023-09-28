@@ -1,0 +1,21 @@
+{
+    "root": true,
+    "overrides": [
+        {
+            "env": {
+                "es6": true,
+                "node": true
+            },
+            "files": [
+                "server/**/*.js"
+            ],
+            "extends": [
+                "eslint:recommended",
+                "plugin:import/recommended"
+            ],
+            "plugins": [
+                "prefer-arrow"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,38 @@
+/**
+ * OpenTDP Base CSS
+ * @author rehiy[wang@rehiy.com]
+ */
+
+ a {
+    text-decoration: none;
+    outline: 0;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+blockquote {
+    margin: 0;
+    padding: 8px;
+    border-left: 3px solid #999;
+    background: #eee;
+}
+
+pre code {
+    display: block;
+    overflow: auto;
+    padding: 10px;
+    background: #eee;
+}
+
+/* 主容器 */
+
+.container-xxl.main {
+    min-height: calc(100vh - 230px);
+}
+
+.container-xxl img {
+    max-width: 100%;
+}
