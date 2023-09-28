@@ -1,17 +1,10 @@
-import app from 'webox-node';
+// add route
 
 import './api/translate.js';
 import './api/get_languages.js';
 
-import { deeplx } from './library/helper.js';
+// app bootsrap
 
-(async () => {
-    await deeplx.init(1);
+import { bootsrap } from './library/helper.js';
 
-    app.init({
-        WEBOX_MODE: 'production',
-        WEBOX_ROOT: './public',
-        WEBOX_HOST: '0.0.0.0',
-        WEBOX_PORT: '8000',
-    });
-})()
+bootsrap();
