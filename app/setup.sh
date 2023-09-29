@@ -1,6 +1,8 @@
 #!/bin/sh
 #
 
+chmod +x /app/*.sh
+
 npm install
 
 # clear files
