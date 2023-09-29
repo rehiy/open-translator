@@ -8,4 +8,6 @@ ADD app /app
 WORKDIR /app/
 RUN sh /app/setup.sh
 
+EXPOSE 80
+
 CMD  ["/app/service.sh"]
