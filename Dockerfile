@@ -8,8 +8,6 @@ ADD app /app
 WORKDIR /app/
 RUN sh /app/setup.sh
 
-ENV PYTHONPATH=/app
-
 EXPOSE 80
 
 CMD  ["/app/service.sh"]

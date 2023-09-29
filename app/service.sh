@@ -5,6 +5,7 @@
 set -m
 
 # Define env vars
+export PYTHONPATH=/app
 export TORCH_CACHE=${TORCH_CACHE:-"/cache/torch"}
 export TRANSFORMERS_CACHE=${TRANSFORMERS_CACHE:-"/cache/transformers"}
 export EASYNMT_CACHE=${EASYNMT_CACHE:-"/cache/easynmt"}
