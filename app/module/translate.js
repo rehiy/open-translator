@@ -1,6 +1,6 @@
 import app from 'webox-node';
 
-import { deeplx } from '../libs/helper.js';
+import { deeplx } from '../library/helper.js';
 
 
 app.use({

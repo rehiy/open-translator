@@ -7,7 +7,7 @@
                 "node": true
             },
             "files": [
-                "server/**/*.js"
+                "app/**/*.js"
             ],
             "extends": [
                 "eslint:recommended",

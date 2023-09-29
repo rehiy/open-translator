@@ -3,7 +3,8 @@ name: Docker Image CI
 on:
   push:
     paths:
-      - 'app/**'
+      - 'public/**'
+      - 'server/**'
       - 'Dockerfile'
 
 jobs:
