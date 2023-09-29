@@ -1,5 +1,6 @@
-import { platform } from 'os'
 import { chromium } from 'playwright';
+
+import env from '../env.js';
 
 
 export class DeepLx {
@@ -9,15 +10,15 @@ export class DeepLx {
         this.worker = [];
     }
 
-    async init(max) {
+    async init() {
         console.log('[DeepLx] Prepare browser ...');
         this.browser = await chromium.launch({
-            channel: platform() === 'win32' ? 'msedge' : '',
-            headless: process.env.NODE_ENV == 'production',
+            channel: env.BROWSER_CHANNEL,
+            headless: env.BROWSER_HANDLESS === 'true'
         });
-        for (let i = max; i > 0; i--) {
+        for (let i = env.WORKER_NUMBER; i > 0; i--) {
             console.log(`[DeepLx] Prepare worker:${i} ...`);
-            const deepl = await new DeepL();
+            const deepl = new DeepL();
             await deepl.init(this.browser);
             this.worker.push(deepl);
         }

@@ -1,4 +1,6 @@
 import app from 'webox-node';
+
+import env from '../env.js';
 import { DeepLx } from './deepl.js';
 
 
@@ -15,12 +17,12 @@ export const deeplx = new DeepLx();
 
 export async function bootsrap() {
     // 启动翻译服务
-    const WORKER_COUNT = process.env.WORKER_COUNT || 0;
-    await deeplx.init(WORKER_COUNT > 0 ? +WORKER_COUNT : 1);
+    await deeplx.init();
     // 启动HTTP服务
     app.init({
-        WEBOX_HOST: process.env.LISTEN_HOST || '127.0.0.1',
-        WEBOX_PORT: process.env.LISTEN_PORT || '8000',
+        WEBOX_MODE: env.NODE_ENV,
+        WEBOX_HOST: env.LISTEN_HOST,
+        WEBOX_PORT: env.LISTEN_PORT,
         WEBOX_ROOT: './public',
     });
 }

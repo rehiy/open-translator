@@ -9,6 +9,6 @@ Install with docker, and open `http://your-server` in your browser
 
 ```shell
 docker run --name translator -d \
-    --env WORKER_COUNT=1 \
+    --env WORKER_NUMBER=1 \
     rehiy/open-translator:deepl
 ```
