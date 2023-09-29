@@ -8,7 +8,4 @@ ADD app /app
 WORKDIR /app/
 RUN sh /app/setup.sh
 
-ENV NODE_ENV=production
-ENV WORKER_NUMBER=2
-
 CMD  ["/app/service.sh"]
