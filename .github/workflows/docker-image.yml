@@ -32,4 +32,4 @@ jobs:
           context: .
           push: true
           platforms: linux/amd64
-          tags: rehiy/open-translator:latest
+          tags: rehiy/open-translator:easynmt
