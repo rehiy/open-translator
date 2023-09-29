@@ -155,10 +155,7 @@
                 get_supported_langs() {
                     const url = '/api/get_languages';
                     fetch(url).then(r => r.json()).then(data => {
-                        this.supported_langs = data.filter(v => {
-                            console.log(v, this.langs[v])
-                         return   this.langs[v]
-                        });
+                        this.supported_langs = data.filter(v => this.langs[v]);
                         this.allowed_source_langs = [...this.supported_langs];
                         this.allowed_target_langs = [...this.supported_langs];
                     });
