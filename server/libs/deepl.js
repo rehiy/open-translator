@@ -40,12 +40,16 @@ export class DeepL {
 
     constructor() {
         this.idle = true;
-        this.source_lang = '';
-        this.target_lang = '';
+        this.sourceLang = '';
+        this.targetLang = '';
 
         this.page = null;
         this.sourceBox = null;
         this.targetBox = null;
+
+        this.targetLangMap = {
+            en: 'en-US', pt: 'pt-PT',
+        };
     }
 
     async init(browser) {
@@ -60,16 +64,17 @@ export class DeepL {
     }
 
     async setSourceLang(lang) {
-        if (this.source_lang !== lang) {
-            this.source_lang = lang = lang || 'auto';
+        if (this.sourceLang !== lang) {
+            this.sourceLang = lang = lang || 'auto';
             await this.page.getByTestId('translator-source-lang-btn').click();
             await this.page.getByTestId('translator-lang-option-' + lang).click();
         }
     }
 
     async setTargetLang(lang) {
-        if (this.target_lang !== lang) {
-            this.target_lang = lang = lang || 'zh';
+        if (this.targetLang !== lang) {
+            this.targetLang = lang = lang || 'zh';
+            this.targetLangMap[lang] && (lang = this.targetLangMap[lang]);
             await this.page.getByTestId('translator-target-lang-btn').click();
             await this.page.getByTestId('translator-lang-option-' + lang).click();
         }
@@ -90,8 +95,8 @@ export class DeepL {
                     this.idle = true;
                     return resolve({
                         translated: translated.trim(),
-                        source_lang: this.source_lang,
-                        target_lang: this.target_lang,
+                        source_lang: this.sourceLang,
+                        target_lang: this.targetLang,
                         detected_lang: await this.getSourceLang(),
                     });
                 }
