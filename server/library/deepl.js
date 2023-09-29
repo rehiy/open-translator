@@ -12,7 +12,8 @@ export class DeepLx {
     async init(max) {
         console.log('[DeepLx] Prepare browser ...');
         this.browser = await chromium.launch({
-            channel: platform() === 'win32' ? 'msedge' : ''
+            channel: platform() === 'win32' ? 'msedge' : '',
+            headless: process.env.NODE_ENV == 'production',
         });
         for (let i = max; i > 0; i--) {
             console.log(`[DeepLx] Prepare worker:${i} ...`);

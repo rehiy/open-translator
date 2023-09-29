@@ -14,12 +14,13 @@ export const languages = [
 export const deeplx = new DeepLx();
 
 export async function bootsrap() {
+    // 启动翻译服务
     const WORKER_COUNT = process.env.WORKER_COUNT || 0;
     await deeplx.init(WORKER_COUNT > 0 ? +WORKER_COUNT : 1);
+    // 启动HTTP服务
     app.init({
-        WEBOX_MODE: 'production',
+        WEBOX_HOST: process.env.LISTEN_HOST || '127.0.0.1',
+        WEBOX_PORT: process.env.LISTEN_PORT || '8000',
         WEBOX_ROOT: './public',
-        WEBOX_HOST: '0.0.0.0',
-        WEBOX_PORT: '8000',
     });
 }
