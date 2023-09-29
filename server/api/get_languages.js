@@ -1,6 +1,6 @@
 import app from 'webox-node';
 
-import { languages } from '../library/helper.js';
+import { languages } from '../libs/helper.js';
 
 
 app.use({
