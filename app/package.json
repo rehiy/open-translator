@@ -15,8 +15,8 @@
         "api"
     ],
     "scripts": {
-        "start": "node server/app.js",
-        "lint": "eslint src"
+        "start": "node app.js",
+        "lint": "eslint ."
     },
     "dependencies": {
         "playwright": "^1.38.1",
@@ -28,6 +28,6 @@
         "eslint-plugin-prefer-arrow": "^1.2.3"
     },
     "type": "module",
-    "main": "server/app.js",
-    "module": "server/app.js"
+    "main": "app.js",
+    "module": "app.js"
 }
