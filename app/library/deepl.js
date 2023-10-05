@@ -56,6 +56,7 @@ export class DeepL {
 
     async init(context) {
         this.page = await context.newPage();
+        this.page.route(/(gif|statistics)$/, r => r.abort());
         await this.page.goto('https://www.deepl.com/en/translator');
         [this.sourceBox, this.targetBox] = await this.page.getByRole('textbox').all();
     }
