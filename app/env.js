@@ -15,7 +15,7 @@ env.BROWSER_HANDLESS = env.NODE_ENV == 'production' ? 'true' : 'false';
 
 // DEEPL 最大进程数
 
-env.WORKER_NUMBER = env.WORKER_NUMBER > 0 ? env.WORKER_NUMBER : 2;
+env.WORKER_NUMBER = env.WORKER_NUMBER > 0 ? env.WORKER_NUMBER : 1;
 
 // HTTP 监听地址
 
