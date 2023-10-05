@@ -19,7 +19,9 @@ export class DeepLx {
         for (let i = env.WORKER_NUMBER; i > 0; i--) {
             console.log(`[DeepLx] Prepare worker:${i} ...`);
             const deepl = new DeepL();
-            await deepl.init(this.browser);
+            await deepl.init(
+                await this.browser.newContext()
+            );
             this.worker.push(deepl);
         }
         console.log('[DeepLx] Prepare done, worker count:', this.worker.length);
@@ -52,8 +54,8 @@ export class DeepL {
         };
     }
 
-    async init(browser) {
-        this.page = await browser.newPage();
+    async init(context) {
+        this.page = await context.newPage();
         await this.page.goto('https://www.deepl.com/en/translator');
         [this.sourceBox, this.targetBox] = await this.page.getByRole('textbox').all();
     }
@@ -76,6 +78,7 @@ export class DeepL {
             this.targetLang = lang = lang || 'zh';
             this.targetLangMap[lang] && (lang = this.targetLangMap[lang]);
             await this.page.getByTestId('translator-target-lang-btn').click();
+
             await this.page.getByTestId('translator-lang-option-' + lang).click();
         }
     }
