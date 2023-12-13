@@ -1,30 +1,12 @@
-# Open Translator
+# NLLB Serve
 
-- Friendly web-gui
-- State-of-the-art neural machine translation
-- Automatic download of pre-trained machine translation models
+[NLLB Serve](https://github.com/thammegowda/nllb-serve) offers a web interface and REST API to Meta's No Language Left Behind (NLLB) models that can translate across 200 languages.
 
-## Usage
+The purpose of this project is to automatically submit the nllb-server container mirror to the [docker hub](https://hub.docker.com/r/rehiy).
 
-Install with docker, and open `http://your-server` in your browser
+## Qiuck Start
 
 ```shell
-docker run --name translator -d \
-    --env EASYNMT_MODEL=opus-mt \
-    --volume ./cache:/cache \
-    rehiy/open-translator
+docker run --name nllb-serve -d -p 6060:6060 rehiy/open-translator:nllb
+docker logs -f nllb-serve
 ```
-
-## Available Models
-
-The following models are currently available. They provide translations between 150+ languages.
-
-| Model        | Reference                                                                                 | #Languages |  Size  |
-| ------------ | ----------------------------------------------------------------------------------------- | :--------: | :----: |
-| opus-mt      | [Helsinki-NLP](https://github.com/Helsinki-NLP/Opus-MT)                                   |    186     | 300 MB |
-| mbart50_m2m  | [Facebook Research](https://github.com/pytorch/fairseq/tree/master/examples/multilingual) |     52     | 2.3 GB |
-| m2m_100_1.2B | [Facebook Research](https://github.com/pytorch/fairseq/tree/master/examples/m2m_100)      |    100     | 5.0 GB |
-
-## More Infomation
-
-For more help, please visit  [EasyNMT](https://github.com/UKPLab/EasyNMT)

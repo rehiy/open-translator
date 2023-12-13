@@ -1,0 +1,10 @@
+#!/bin/sh -e
+#
+
+docker build -t rehiy/nllb-serve .
+
+docker run --name nllb-serve -d rehiy/nllb-serve
+docker rm -f nllb-serve
+
+docker rmi rehiy/nllb-serve
+docker image prune -f

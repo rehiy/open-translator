@@ -1,0 +1,15 @@
+#!/bin/sh -e
+#
+
+mkdir -p /srv/nllb-serv && cd /srv/nllb-serv
+
+wget -qO- https://github.com/thammegowda/nllb-serve/archive/refs/heads/main.tar.gz |
+     tar xzvf - -C /srv/nllb-serv --strip-components 1
+
+pip3 install --upgrade pip
+pip3 install -e .
+
+# clean files
+
+rm -rf docs Dockerfile docker-compose.yml
+rm -rf /tmp/* ~/.cache
